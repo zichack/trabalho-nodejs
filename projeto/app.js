@@ -19,10 +19,20 @@ app.use(session({
 }));
 
 const authRoutes = require('./src/routes/auth.routes');
+const eventosRoutes = require('./src/routes/eventos.routes');
+const salasRoutes = require('./src/routes/salas.routes');
+const inscricoesRoutes = require('./src/routes/inscricoes.routes');
+const certificadosRoutes = require('./src/routes/certificados.routes');
+const palestrantesRoutes = require('./src/routes/palestrantes.routes');
 
 app.use('/', authRoutes);
+app.use('/eventos', eventosRoutes);
+app.use('/salas', salasRoutes);
+app.use('/inscricoes', inscricoesRoutes);
+app.use('/certificados', certificadosRoutes);
+app.use('/palestrantes', palestrantesRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => {
-    console.log(`Servidor a correr corretamente na porta http://localhost:${PORT}`);
+    console.log(`Servidor rodando na porta http://localhost:${PORT}`);
 });
