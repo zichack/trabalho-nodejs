@@ -1,54 +1,33 @@
-let usuarios = [];
+const Usuario = require('../models/usuario');
 
 // CREATE
-function criarUsuario(id, nome, email) {
-    usuarios.push({ id, nome, email });
-    console.log("Usuário cadastrado!");
-}
+const criarUsuario = async (req, res) => {
+    const { nome, email, senha, tipo } = req.body;
+
+    try {
+        await Usuario.criar(nome, email, senha, tipo || 'inscrito');
+        console.log("Usuário cadastrado com sucesso no banco!");
+        // Redireciona de volta para a lista após salvar
+        res.redirect('/usuarios'); 
+    } catch (erro) {
+        console.error('Erro ao cadastrar usuário:', erro);
+        res.status(500).send('Erro ao salvar no banco de dados');
+    }
+};
 
 // READ
-function listarUsuarios() {
-    console.log("\nLista de Usuários:");
-    usuarios.forEach(usuario => {
-        console.log(`ID: ${usuario.id} | Nome: ${usuario.nome} | Email: ${usuario.email}`);
-    });
-}
-
-// UPDATE
-function atualizarUsuario(id, novoNome, novoEmail) {
-    const usuario = usuarios.find(u => u.id === id);
-
-    if (usuario) {
-        usuario.nome = novoNome;
-        usuario.email = novoEmail;
-        console.log("Usuário atualizado!");
-    } else {
-        console.log("Usuário não encontrado.");
+const listarUsuarios = async (req, res) => {
+    try {
+        const lista = await Usuario.listarTodos();
+        // Envia a lista para a sua tela EJS renderizar a tabela
+        res.render('usuarios/index', { usuarios: lista });
+    } catch (erro) {
+        console.error('Erro ao buscar usuários:', erro);
+        res.status(500).send('Erro interno ao carregar a lista');
     }
-}
+};
 
-// DELETE
-function excluirUsuario(id) {
-    const indice = usuarios.findIndex(u => u.id === id);
-
-    if (indice !== -1) {
-        usuarios.splice(indice, 1);
-        console.log("Usuário removido!");
-    } else {
-        console.log("Usuário não encontrado.");
-    }
-}
-
-// Exemplo de uso
-criarUsuario(1, "Samuel", "samuel@email.com");
-criarUsuario(2, "Maria", "maria@email.com");
-
-listarUsuarios();
-
-atualizarUsuario(1, "Samuel Augusto", "samuelaugusto@email.com");
-
-listarUsuarios();
-
-excluirUsuario(2);
-
-listarUsuarios();
+module.exports = {
+    criarUsuario,
+    listarUsuarios
+};
