@@ -24,8 +24,24 @@ const login = async (req, res) => {
     }
 };
 
-const renderizarDashboard = (req, res) => {
-    res.render('dashboard', { usuario: req.session.usuario });
+const Evento = require('../models/evento');
+const Inscricao = require('../models/inscricao');
+
+const renderizarDashboard = async (req, res) => {
+    const usuario = req.session.usuario;
+
+    if (usuario.tipo === 'admin') {
+        res.render('dashboard', { usuario });
+    } else {
+        try {
+            const eventosDisponiveis = await Evento.listarTodos();
+            const minhasInscricoes = await Inscricao.listarPorUsuario(usuario.id);
+            res.render('dashboard-aluno', { usuario, eventos: eventosDisponiveis, inscricoes: minhasInscricoes });
+        } catch (erro) {
+            console.error(erro);
+            res.status(500).send('Erro ao carregar o painel do aluno.');
+        }
+    }
 };
 
 const logout = (req, res) => {

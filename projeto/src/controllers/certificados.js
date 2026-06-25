@@ -1,35 +1,41 @@
-// controllers/certificados.js
-const CertificadoModel = require('../models/certificado');
+const db = require('../../database/db');
+const crypto = require('crypto');
 
-const CertificadoController = {
-    gerarCertificado: async (req, res) => {
-        try {
-            
-            const { idInscricao } = req.params;
-
-            const dadosCertificado = await CertificadoModel.verificarPresenca(idInscricao);
-
-            if (!dadosCertificado) {
-                return res.status(403).send(`
-                    <div style="text-align:center; margin-top:50px; font-family:Arial;">
-                        <h2>Acesso Negado</h2>
-                        <p>Sua presença não foi confirmada para este evento, por isso o certificado não está disponível.</p>
-                    </div>
-                `);
-            }
-
-            return res.render('certificados', {
-                nomeUsuario: dadosCertificado.nome_usuario,
-                nomeEvento: dadosCertificado.nome_evento,
-                cargaHoraria: dadosCertificado.carga_horaria,
-                dataEmissao: new Date().toLocaleDateString('pt-BR')
-            });
-
-        } catch (error) {
-            console.error("Erro ao processar certificado:", error);
-            return res.status(500).send("Erro interno ao gerar o certificado.");
-        }
+const listar = async (req, res) => {
+    try {
+        const query = `
+            SELECT c.codigo_autenticacao, c.data_emissao, u.nome as aluno, e.titulo as evento
+            FROM certificados c
+            JOIN inscricoes i ON c.id_inscricao = i.id
+            JOIN usuarios u ON i.id_usuario = u.id
+            JOIN eventos e ON i.id_evento = e.id
+        `;
+        const result = await db.query(query);
+        res.render('certificados/index', { certificados: result.rows });
+    } catch (erro) {
+        console.error(erro);
+        res.status(500).send('Erro ao carregar certificados.');
     }
 };
 
-module.exports = CertificadoController;
+const emitirCertificado = async (req, res) => {
+    const { id_inscricao } = req.body;
+    try {
+        const codigoAutenticacao = crypto.randomBytes(12).toString('hex').toUpperCase();
+
+        await db.query(
+            'INSERT INTO certificados (id_inscricao, codigo_autenticacao) VALUES ($1, $2)',
+            [id_inscricao, codigoAutenticacao]
+        );
+
+        res.redirect('/dashboard');
+    } catch (erro) {
+        if (erro.code === '23505') { 
+            return res.status(400).send('Erro: O seu certificado para este evento já foi emitido!');
+        }
+        console.error(erro);
+        res.status(500).send('Erro interno do servidor.');
+    }
+};
+
+module.exports = { listar, emitirCertificado };

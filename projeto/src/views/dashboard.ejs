@@ -17,13 +17,13 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item"><a class="nav-link active" href="/dashboard">Dashboard</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Eventos</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Salas</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Palestrantes</a></li>
+                <li class="nav-item"><a class="nav-link" href="/eventos">Eventos</a></li>
+                <li class="nav-item"><a class="nav-link" href="/salas">Salas</a></li>
+                <li class="nav-item"><a class="nav-link" href="/palestrantes">Palestrantes</a></li>
             </ul>
             <div class="d-flex align-items-center">
-                <span class="text-white me-3">Olá, Administrador</span>
-                <a href="/" class="btn btn-sm btn-outline-light">Sair</a>
+                <span class="text-white me-3">Olá, <%= typeof usuario !== 'undefined' ? usuario.nome : 'Administrador' %></span>
+                <a href="/logout" class="btn btn-sm btn-outline-light">Sair</a>
             </div>
         </div>
     </div>
@@ -72,9 +72,9 @@
             <h6 class="mb-0 mt-1">Ações Rápidas</h6>
         </div>
         <div class="card-body">
-            <button class="btn btn-outline-primary btn-sm me-2">+ Novo Evento</button>
-            <button class="btn btn-outline-secondary btn-sm me-2">+ Nova Sala</button>
-            <button class="btn btn-outline-success btn-sm">Emitir Certificado em Lote</button>
+            <a href="/eventos/novo" class="btn btn-outline-primary btn-sm me-2">+ Novo Evento</a>
+            <a href="/salas/novo" class="btn btn-outline-secondary btn-sm me-2">+ Nova Sala</a>
+            <a href="/certificados" class="btn btn-outline-success btn-sm">Emitir Certificados</a>
         </div>
     </div>
 </div>
