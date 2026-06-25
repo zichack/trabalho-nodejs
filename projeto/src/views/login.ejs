@@ -20,18 +20,18 @@
             <small>Sistema de Gestão Acadêmica</small>
         </div>
         <div class="card-body p-4">
-            <form action="/dashboard" method="GET">
+            <form action="/login" method="POST">
                 <div class="mb-3">
                     <label for="email" class="form-label text-muted small">E-mail</label>
-                    <input type="email" class="form-control" id="email" placeholder="nome@positivo.br" required>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="nome@positivo.br" required>
                 </div>
                 <div class="mb-3">
-                    <label for="senha" class="form-label text-muted small">Senha</label>
-                    <input type="password" class="form-control" id="senha" placeholder="••••••••" required>
+                    <label for="senha" class="form-label text-muted small">Palavra-passe</label>
+                    <input type="password" class="form-control" id="senha" name="senha" placeholder="••••••••" required>
                 </div>
                 <div class="mb-4">
-                    <label for="tipo" class="form-label text-muted small">Tipo de usuário:</label>
-                    <select class="form-select" id="tipo">
+                    <label for="tipo" class="form-label text-muted small">Tipo de utilizador:</label>
+                    <select class="form-select" id="tipo" name="tipo">
                         <option value="inscrito">Inscrito (Aluno)</option>
                         <option value="admin">Administrador</option>
                     </select>
